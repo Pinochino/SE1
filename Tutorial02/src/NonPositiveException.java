@@ -1,4 +1,4 @@
-public class NonPositiveException extends Exception{
+public class NonPositiveException extends Exception {
 
 
     public NonPositiveException(String message) {
