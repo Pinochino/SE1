@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,6 +14,9 @@ import java.util.UUID;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "Employee")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
 
     @Id
@@ -28,10 +30,10 @@ public class Employee {
     @Max(55)
     int age;
 
+    @Column(name = "Address")
+    String address;
+
     @NotEmpty(message = "Image can not be empty")
     String image;
-
-
-
 
 }

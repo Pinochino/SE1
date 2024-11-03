@@ -1,24 +1,26 @@
 package com.example.Tutorial8.controller;
 
+import com.example.Tutorial8.dto.EmployeeDto;
 import com.example.Tutorial8.model.Employee;
 import com.example.Tutorial8.repository.EmployeeRepository;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(path = "/api")
 public class EmployeeController {
+
     EmployeeRepository employeeRepository;
 
     @Autowired
@@ -26,17 +28,47 @@ public class EmployeeController {
         this.employeeRepository = employeeRepository;
     }
 
+    @GetMapping(path = "/home")
+    public String homepage(Model model) {
+        return "_layout";
+    }
+
     @GetMapping(value = "/list")
-    public String getAllEmployee(Model model){
+    public String getAllEmployee(Model model) {
+        List<Employee> employeeList = employeeRepository.findAll();
+        model.addAttribute("employees", employeeList);
         return "employeeList";
     }
 
-    @GetMapping(path = "/save")
+    @GetMapping(value = "/employee/{id}")
+    public String getEmployeeById(
+            @PathVariable(value = "id") UUID id, Model model) {
+        Employee employeeOptional = employeeRepository.getById(id);
+
+        model.addAttribute("employee", employeeOptional);
+        return "employeeDetail";
+    }
+
+    @GetMapping("/add")
+    public String showAddEmployeeForm(Model model) {
+        model.addAttribute("employee", new Employee());
+        return "employeeAdd";
+    }
+
+    @GetMapping("/update/{id}")
+    public String showUpdateEmployeeForm(@PathVariable UUID id, Model model) throws Exception {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new Exception("Employee does not exist"));
+        model.addAttribute("employee", employee);
+        return "employeeUpdate";
+    }
+
+
+    @PostMapping(path = "/add")
     public String saveUpdate(
-            @RequestParam(value = "id", required = false) UUID id, @Valid Employee employee, BindingResult result
-            ){
+            @RequestParam(value = "id", required = false) UUID id, @Valid Employee employee, BindingResult result) {
         if (result.hasErrors()) {
-            if( id == null){
+            if (id == null) {
                 return "employeeAdd";
             } else {
                 return "employeeUpdate";
@@ -44,7 +76,29 @@ public class EmployeeController {
         }
         employee.setId(id);
         employeeRepository.save(employee);
-        return "redirect:/list";
+        return "redirect:/api/list";
+    }
 
+    @PostMapping("/update/{id}")
+    public String updateEmployee(@PathVariable UUID id, @Valid @ModelAttribute EmployeeDto employeeDto, BindingResult result) throws Exception {
+        if (result.hasErrors()) {
+            return "employeeUpdate";
+        }
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new Exception("Employee does not exist"));
+        employee.setName(employeeDto.getName());
+        employee.setAge(employeeDto.getAge());
+        employee.setImage(employeeDto.getImage());
+        employeeRepository.save(employee);
+        return "redirect:/api/list";
+    }
+
+
+    @GetMapping("/delete/{id}")
+    public String deleteEmployee(@PathVariable UUID id) throws Exception {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new Exception("Employee does not exist"));
+        employeeRepository.delete(employee);
+        return "redirect:/api/list";
     }
 }
