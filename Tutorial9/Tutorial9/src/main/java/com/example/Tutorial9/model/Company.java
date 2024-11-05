@@ -3,18 +3,19 @@ package com.example.Tutorial9.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "Company")
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Company {
 
@@ -32,6 +33,6 @@ public class Company {
     @Length(min = 5, max = 50)
     String address;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    Employee employee;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.LAZY)
+    List<Employee> employeeList;
 }
