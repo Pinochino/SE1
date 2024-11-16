@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
+import Notification from "../common/Notification";
+import { useNavigate } from "react-router-dom";
 
 function AddStudent() {
     const [loading, setLoading] = useState(false);
@@ -8,9 +10,11 @@ function AddStudent() {
         name: "",
         age: "",
     });
+    const [success, setSuccess] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
-        event.preventDefault();
 
         const { name, value } = event.target;
         setInformation((prev) => ({
@@ -27,6 +31,10 @@ function AddStudent() {
         try {
             const response = await axios.post(API, information);
             console.log("Response:", response.data);
+             setSuccess(true);
+            setTimeout(() => {
+                navigate('/');
+            }, 3000)
             setLoading(false);
         } catch (error) {
             console.error("Error:", error);
@@ -45,6 +53,8 @@ function AddStudent() {
     return (
         <div className="container">
             <h3>Add Student</h3>
+            {success && <Notification success={true} content={"Successful add"}/>}
+            {error && <Notification fail={true} content={"Fail add"}/>}
             <form method="post" onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label for="name" className="form-label">

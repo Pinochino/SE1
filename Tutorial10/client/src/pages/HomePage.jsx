@@ -58,7 +58,7 @@ function HomePage() {
                             <td>{student.name}</td>
                             <td>{student.age}</td>
                             <td>
-                                <Link to={`http://localhost:8080/api/v1/students/update/${student.id}`} className="btn btn-outline-primary me-3">Update</Link>
+                                <Link to={`http://localhost:3000/update/${student.id}`} className="btn btn-outline-primary me-3">Update</Link>
                                 <button onClick={() => handleDelete(student.id)} className="btn btn-outline-danger">Delete</button>
                             </td>
                         </tr>
