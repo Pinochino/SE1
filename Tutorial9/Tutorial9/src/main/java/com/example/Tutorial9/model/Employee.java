@@ -20,9 +20,10 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    UUID employeeId;
+    @Column(name = "id")
+    UUID id;
 
-    @Column(name = "employeeName")
+    @Column(name = "name")
     String name;
 
     @Column(name = "age")
@@ -35,8 +36,8 @@ public class Employee {
     @NotEmpty(message = "Image can not be empty")
     String image;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "companyId")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id", nullable = false)
     Company company;
 
 }

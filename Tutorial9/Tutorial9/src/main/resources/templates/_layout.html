@@ -14,10 +14,10 @@
 <div class="navigation">
     <nav class="navbar navbar-light bg-light">
         <form class="container-fluid justify-content-start">
-            <a th:href="'/home'" class="btn btn-outline-danger me-3" th:text="'Home'"></a>
-            <a th:href="'/api/list'" class="btn btn-outline-success me-3" th:text="'Employee List'"></a>
-            <a th:href="'/api/logout'" class="btn btn-outline-primary me-3" th:text="'Company'"></a>
-            <a th:href="'/api/logout'" class="btn btn-outline-primary me-3" th:text="'Logout'"></a>
+            <a th:href="@{/api/home}" class="btn btn-outline-danger me-3" th:text="'Home'"></a>
+            <a th:href="@{/api/list}" class="btn btn-outline-success me-3" th:text="'Employee List'"></a>
+            <a th:href="@{/company/list}" class="btn btn-outline-primary me-3" th:text="'Company'"></a>
+            <a th:href="@{/api/logout}" class="btn btn-outline-primary me-3" th:text="'Logout'"></a>
         </form>
     </nav>
 </div>

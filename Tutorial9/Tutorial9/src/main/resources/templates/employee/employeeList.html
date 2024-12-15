@@ -35,10 +35,10 @@
             </thead>
             <tbody>
             <tr th:each="employee : ${employees}">
-                <td th:text="${employee.employeeId}"></td>
+                <td th:text="${employee.id}"></td>
                 <td><a th:text="${employee.name}" class="text-decoration-none" /></td>
                 <td>
-                    <a th:ref="'/' + ${employee.employeeId}">
+                    <a th:ref="'/' + ${employee.id}">
                         <img th:src="${employee.image}" alt="Employee Image" class="img-thumbnail" width="100" height="100">
                     </a>
                 </td>

@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -43,7 +44,7 @@ public class EmployeeController {
     @GetMapping(value = "/employee/{id}")
     public String getEmployeeById(
             @PathVariable(value = "id") UUID id, Model model) {
-        Employee employeeOptional = employeeRepository.getById(id);
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
 
         model.addAttribute("employee", employeeOptional);
         return "employee/employeeDetail";
@@ -63,7 +64,6 @@ public class EmployeeController {
         return "employee/employeeUpdate";
     }
 
-
     @PostMapping(path = "/add")
     public String saveUpdate(
             @RequestParam(value = "id", required = false) UUID id, @Valid Employee employee, BindingResult result) {
@@ -74,13 +74,14 @@ public class EmployeeController {
                 return "employee/employeeUpdate";
             }
         }
-        employee.setEmployeeId(id);
+        employee.setId(UUID.randomUUID());
         employeeRepository.save(employee);
         return "redirect:/api/list";
     }
 
     @PostMapping("/update/{id}")
-    public String updateEmployee(@PathVariable UUID id, @Valid @ModelAttribute EmployeeDto employeeDto, BindingResult result) throws Exception {
+    public String updateEmployee(@PathVariable UUID id, @Valid @ModelAttribute EmployeeDto employeeDto,
+            BindingResult result) throws Exception {
         if (result.hasErrors()) {
             return "employee/employeeUpdate";
         }
@@ -93,7 +94,6 @@ public class EmployeeController {
         return "redirect:/api/list";
     }
 
-
     @GetMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable UUID id) throws Exception {
         Employee employee = employeeRepository.findById(id)
@@ -104,22 +104,21 @@ public class EmployeeController {
 
     @GetMapping("/search")
     public String searchEmployee(Model model,
-                                 @RequestParam(value = "name") String name
-                                 ) {
+            @RequestParam(value = "name") String name) {
         List<Employee> employees = employeeRepository.findByNameContaining(name);
         model.addAttribute("employees", employees);
         return "employee/employeeList";
     }
 
     @GetMapping("/sort/asc")
-    public String sortEmployeeAsc(Model model){
+    public String sortEmployeeAsc(Model model) {
         List<Employee> employees = employeeRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         model.addAttribute("employees", employees);
         return "employee/employeeList";
     }
 
     @GetMapping("/sort/desc")
-    public String sortEmployeeDesc(Model model){
+    public String sortEmployeeDesc(Model model) {
         List<Employee> employees = employeeRepository.findAll(Sort.by(Sort.Direction.DESC, "name"));
         model.addAttribute("employees", employees);
         return "employee/employeeList";

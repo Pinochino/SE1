@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -40,12 +41,18 @@ public class EmployeeController {
         return "employeeList";
     }
 
-    @GetMapping(value = "/employee/{id}")
-    public String getEmployeeById(
-            @PathVariable(value = "id") UUID id, Model model) {
-        Employee employeeOptional = employeeRepository.getById(id);
+    @GetMapping("/employee/{id}")
+    public String getEmployeeDetail(@PathVariable UUID id, Model model) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
 
-        model.addAttribute("employee", employeeOptional);
+        if (optionalEmployee.isPresent()) {
+
+            Employee employee = optionalEmployee.get();
+            model.addAttribute("employee", employee);
+        } else {
+            return "redirect:/error";
+        }
+
         return "employeeDetail";
     }
 

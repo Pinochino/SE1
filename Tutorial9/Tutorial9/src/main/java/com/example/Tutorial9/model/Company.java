@@ -21,7 +21,7 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "companyId", nullable = false)
+    @Column(name = "companyId")
     UUID companyId;
 
     @Size(min = 3, max = 30)
@@ -33,6 +33,6 @@ public class Company {
     @Length(min = 5, max = 50)
     String address;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.LAZY, orphanRemoval = true)
     List<Employee> employeeList;
 }
